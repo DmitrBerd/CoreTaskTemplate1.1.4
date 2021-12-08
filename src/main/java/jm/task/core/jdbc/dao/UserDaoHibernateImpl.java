@@ -31,6 +31,9 @@ public class UserDaoHibernateImpl implements UserDao {
                     "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)\n").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             e.printStackTrace();
         } finally {
             session.close();
@@ -45,6 +48,9 @@ public class UserDaoHibernateImpl implements UserDao {
             session.createSQLQuery("DROP TABLE  if exists Users").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             e.printStackTrace();
         } finally {
             session.close();
@@ -60,6 +66,9 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.commit();
             System.out.println("User с именем – " + name + " добавлен в базу данных");
         } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             e.printStackTrace();
         } finally {
             session.close();
@@ -75,6 +84,9 @@ public class UserDaoHibernateImpl implements UserDao {
             session.delete(session.get(User.class, id));
             transaction.commit();
         } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             e.printStackTrace();
         } finally {
             session.close();
@@ -90,6 +102,9 @@ public class UserDaoHibernateImpl implements UserDao {
             list = session.createQuery("FROM User").list();
             transaction.commit();
         } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             e.printStackTrace();
         } finally {
             session.close();
@@ -102,9 +117,12 @@ public class UserDaoHibernateImpl implements UserDao {
         try {
             session = Util.getSessionFactory().openSession();
             transaction = session.beginTransaction();
-            session.createSQLQuery("DELETE FROM Users").executeUpdate();
+            session.createQuery("DELETE FROM User").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             e.printStackTrace();
         } finally {
             session.close();
